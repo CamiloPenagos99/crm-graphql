@@ -1,5 +1,6 @@
 {
   "name": "crm-graphql",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "src/api/index.js",
