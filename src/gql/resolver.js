@@ -5,6 +5,9 @@ export const resolvers = {
       hello: () => 'Hello world!',
     },
     Mutation: {
-      usuario: ()=> 'Creando nuevo usuario'
+      usuario: (_, { input }, ctx)=> {
+        console.log('creando a: ', input)
+        return "Creando: " + input.nombre
+      }
     }
   };
