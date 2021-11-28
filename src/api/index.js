@@ -7,10 +7,13 @@ const app = express();
 
 const port = 4000;
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, context: ()=>{
+  const val = "contexto de app"
+  return val
+} });
 await server.start()
 server.applyMiddleware({ app });
 
-app.listen({ port: 4000 }, () =>
+app.listen(port, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );

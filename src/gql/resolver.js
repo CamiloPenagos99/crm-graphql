@@ -9,9 +9,10 @@ const cursos = [
 export const resolvers = {
     Query: {
       hello: () => 'Hello world!',
-      cursos: (_, { input }) => {
-        console.log("gQL input: ", input)
-        const res = cursos.filter(curso => curso.topic === input)
+      cursos: (_, props, ctx) => {
+        console.log(ctx)
+        console.log("gQL input: ", props.input)
+        const res = cursos.filter(curso => curso.topic === 'input')
         return res
       },
     },
