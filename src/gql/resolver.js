@@ -4,4 +4,7 @@ export const resolvers = {
     Query: {
       hello: () => 'Hello world!',
     },
+    Mutation: {
+      usuario: ()=> 'Creando nuevo usuario'
+    }
   };
