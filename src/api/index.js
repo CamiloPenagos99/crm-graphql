@@ -19,7 +19,19 @@ const server = new ApolloServer({
 await server.start();
 server.applyMiddleware({ app });
 
+/*
 await connec();
 app.listen(port, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
+*/
+
+const  iniciarApi = async()=>{
+  const con = await connec();
+  console.log('conexion a db terminada: ', con)
+  app.listen(port, () => {
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+  });
+}
+
+iniciarApi()
