@@ -7,11 +7,15 @@ const app = express();
 
 const port = 4000;
 
-const server = new ApolloServer({ typeDefs, resolvers, context: ()=>{
-  const val = "contexto de app"
-  return val
-} });
-await server.start()
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () => {
+    const val = "contexto de app";
+    return val;
+  },
+});
+await server.start();
 server.applyMiddleware({ app });
 
 app.listen(port, () =>
