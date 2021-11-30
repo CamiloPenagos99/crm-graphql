@@ -29,4 +29,4 @@ const UsuarioSchema = mongoose.Schema({
     }
 })
 
-export default model = ()=>{ mongoose.model('Usuario', UsuarioSchema)}
+export default mongoose.model('Usuario', UsuarioSchema);
