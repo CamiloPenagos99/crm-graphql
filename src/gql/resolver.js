@@ -15,7 +15,7 @@ export const resolvers = {
         console.log("existe usuario:", existeUsuario);
         return existeUsuario
       }
-      if (!existeUsuario) console.log("NO existe usuario:", existeUsuario);
+      if (!existeUsuario) console.log("Creando el nuevo usuario:", input);
       //hash del password
 
       //guardar en base de datos
