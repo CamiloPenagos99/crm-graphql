@@ -12,8 +12,19 @@ const crearToken = (user, secret, expiresIn) => {
 // Provide resolver functions for your schema fields
 export const resolvers = {
   Query: {
-    hello: () => "Hello world!",
+    obtenerUsuario: async (_, { token }, ctx) => {
+      console.log("token: ", token);
+      const { id } = await jwt.verify(token, process.env.SECRET);
+      if (id) {
+        console.log('usuario ID: ', id)
+        const user = await Usuario.findOne({ _id: id });
+        return user;
+      } else {
+        throw new Error("Token invalido");
+      }
+    },
   },
+
   Mutation: {
     usuario: async (_, { input }, ctx) => {
       //validar si el usuario esta registrado
@@ -60,8 +71,6 @@ export const resolvers = {
       return {
         token: crearToken(existeUsuario, process.env.SECRET, "12h"),
       };
-
-      
     },
   },
 };
