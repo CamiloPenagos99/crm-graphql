@@ -1,4 +1,5 @@
 import Usuario from "../domain/models/Usuario.js";
+import Producto from "../domain/models/Producto.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -16,7 +17,7 @@ export const resolvers = {
       console.log("token: ", token);
       const { id } = await jwt.verify(token, process.env.SECRET);
       if (id) {
-        console.log('usuario ID: ', id)
+        console.log("usuario ID: ", id);
         const user = await Usuario.findOne({ _id: id });
         return user;
       } else {
@@ -47,6 +48,7 @@ export const resolvers = {
         return _user;
       } catch (error) {
         console.error("error al guardar: ", error.message);
+        throw new Error("Error al guardar usuario")
       }
     },
 
@@ -72,5 +74,22 @@ export const resolvers = {
         token: crearToken(existeUsuario, process.env.SECRET, "12h"),
       };
     },
+
+    producto: async(_, { input }, ctx )=> {
+      console.log('Input producto: ', input)
+
+      //guardar en base de datos
+      try {
+        const _producto = new Producto(input);
+        await _producto.save();
+        return _producto;
+      } catch (error) {
+        console.error("error al guardar: ", error.message);
+        throw new Error("Error al guardar usuario")
+      }
+
+    }
+
   },
+  
 };
