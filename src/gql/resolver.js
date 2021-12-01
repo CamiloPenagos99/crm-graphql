@@ -1,4 +1,5 @@
 import Usuario from "../domain/models/Usuario.js";
+import bcryptjs from "bcryptjs"
 
 // Provide resolver functions for your schema fields
 export const resolvers = {
@@ -17,6 +18,8 @@ export const resolvers = {
       }
       if (!existeUsuario) console.log("Creando el nuevo usuario:", input);
       //hash del password
+      const salt = await bcryptjs.genSalt(2);
+      input.password = await bcryptjs.hash(password, salt)
 
       //guardar en base de datos
       try {
