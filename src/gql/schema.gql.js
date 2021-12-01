@@ -5,7 +5,7 @@ export const typeDefs = gql`
 #Querys
   type Query {
     obtenerUsuario (token: String!): Usuario
-    #obtenerProducto (token: String!): Producto
+    obtenerProducto: [Producto]
   }
 
 #Objects types

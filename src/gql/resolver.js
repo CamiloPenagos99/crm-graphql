@@ -24,6 +24,13 @@ export const resolvers = {
         throw new Error("Token invalido");
       }
     },
+
+    //Productos
+    obtenerProducto:  async () => { 
+      const filter = {};
+      const all = await Producto.find(filter);
+      return all
+    }
   },
 
   Mutation: {
@@ -91,5 +98,5 @@ export const resolvers = {
     }
 
   },
-  
+
 };
