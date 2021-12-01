@@ -1,6 +1,14 @@
 import Usuario from "../domain/models/Usuario.js";
-import bcryptjs from "bcryptjs"
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
+const crearToken = (user, secret, expiresIn) => {
+  console.log(user);
+  const { id, email } = user;
+  const token = jwt.sign({ id }, secret, { expiresIn });
+  console.log("Token generado: ", token);
+  return token;
+};
 // Provide resolver functions for your schema fields
 export const resolvers = {
   Query: {
@@ -14,12 +22,12 @@ export const resolvers = {
       const existeUsuario = await Usuario.findOne({ email: email });
       if (existeUsuario) {
         console.log("existe usuario:", existeUsuario);
-        return existeUsuario
+        return existeUsuario;
       }
       if (!existeUsuario) console.log("Creando el nuevo usuario:", input);
       //hash del password
       const salt = await bcryptjs.genSalt(2);
-      input.password = await bcryptjs.hash(password, salt)
+      input.password = await bcryptjs.hash(password, salt);
 
       //guardar en base de datos
       try {
@@ -29,6 +37,31 @@ export const resolvers = {
       } catch (error) {
         console.error("error al guardar: ", error.message);
       }
+    },
+
+    autenticacion: async (_, { input }, ctx) => {
+      const { email, password } = input;
+
+      const existeUsuario = await Usuario.findOne({ email: email });
+      if (!existeUsuario) {
+        console.log("No existe usuario:", existeUsuario);
+        throw new Error("El usuario No esta registrado");
+      }
+
+      //verificar los password
+      const passwordValidado = await bcryptjs.compare(
+        password,
+        existeUsuario.password
+      );
+
+      if (!passwordValidado) throw new Error("Datos de entrada incorrectos");
+
+      //crear el token
+      return {
+        token: crearToken(existeUsuario, process.env.SECRET, "12h"),
+      };
+
+      
     },
   },
 };
