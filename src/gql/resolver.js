@@ -26,12 +26,30 @@ export const resolvers = {
     },
 
     //Productos
-    obtenerProducto:  async () => { 
-      const filter = {};
-      const all = await Producto.find(filter);
-      return all
-    }
+    obtenerProductos: async () => {
+      try {
+        const filter = {};
+        const all = await Producto.find(filter);
+        return all;
+      } catch {
+        throw new Error("Error en base de datos");
+      }
+    },
+
+    
+    obtenerProducto: async (_, { id }) => {
+      try {
+        const producto = await Producto.findById(id);
+
+        if (!producto) throw new Error("No existe el producto");
+
+        return producto;
+      } catch (e) {
+        throw new Error("Error en base de datos" + e.message);
+      }
+    },
   },
+  
 
   Mutation: {
     usuario: async (_, { input }, ctx) => {
@@ -55,7 +73,7 @@ export const resolvers = {
         return _user;
       } catch (error) {
         console.error("error al guardar: ", error.message);
-        throw new Error("Error al guardar usuario")
+        throw new Error("Error al guardar usuario");
       }
     },
 
@@ -82,8 +100,8 @@ export const resolvers = {
       };
     },
 
-    producto: async(_, { input }, ctx )=> {
-      console.log('Input producto: ', input)
+    producto: async (_, { input }, ctx) => {
+      console.log("Input producto: ", input);
 
       //guardar en base de datos
       try {
@@ -92,11 +110,43 @@ export const resolvers = {
         return _producto;
       } catch (error) {
         console.error("error al guardar: ", error.message);
-        throw new Error("Error al guardar usuario")
+        throw new Error("Error al guardar usuario");
       }
+    },
 
-    }
+    actualizarProducto: async (_, { id, producto }) => {
+      try {
+        const before = await Producto.findById(id);
 
+        if (!before) throw new Error("No existe el producto");
+
+        const update = await Producto.findByIdAndUpdate(id, producto, {
+          new: true,
+        });
+
+        console.log("before: ", before);
+        console.log("update: ", update);
+
+        return update;
+      } catch (e) {
+        throw new Error("Error en base de datos" + e.message);
+      }
+    },
+
+    eliminarProducto: async (_, { id }) => {
+      try {
+        const before = await Producto.findById(id);
+
+        if (!before) throw new Error("No existe el producto");
+
+        const remove = await Producto.findByIdAndDelete(id);
+
+        console.log("remove: ", remove);
+
+        return remove;
+      } catch (e) {
+        throw new Error("Error en base de datos" + e.message);
+      }
+    },
   },
-
 };

@@ -5,7 +5,8 @@ export const typeDefs = gql`
 #Querys
   type Query {
     obtenerUsuario (token: String!): Usuario
-    obtenerProducto: [Producto]
+    obtenerProductos: [Producto]
+    obtenerProducto(id: ID!): Producto
   }
 
 #Objects types
@@ -13,6 +14,8 @@ export const typeDefs = gql`
     usuario(input: UsuarioInput! ): Usuario
     autenticacion(input: LoginUsuarioInput!): Token
     producto(input: ProductoInput!): Producto
+    actualizarProducto(producto: ProductoUpdateInput!, id: ID!): Producto
+    eliminarProducto(id: ID!): Producto
   }
 
   type Usuario {
@@ -47,6 +50,12 @@ export const typeDefs = gql`
     nombre: String!
     stock: Int!
     precio: Float!
+  }
+
+  input ProductoUpdateInput {
+    nombre: String!
+    stock: Int
+    precio: Float
   }
 
   input LoginUsuarioInput {
