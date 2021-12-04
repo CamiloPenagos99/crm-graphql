@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const UsuarioSchema = mongoose.Schema({
+const ClienteSchema = mongoose.Schema({
     nombre: {
         type: String,
         required: true,
@@ -17,7 +17,11 @@ const UsuarioSchema = mongoose.Schema({
         trim: true,
         unique: true,
     },
-    password: {
+    telefono: {
+        type: String,
+        trim: true,
+    },
+    empresa: {
         type: String,
         required: true,
         trim: true,
@@ -27,6 +31,12 @@ const UsuarioSchema = mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
+
+    vendedor: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Usuario'
+    }
 })
 
-export default mongoose.model('Usuario', UsuarioSchema)
+export default mongoose.model('Cliente', ClienteSchema)
