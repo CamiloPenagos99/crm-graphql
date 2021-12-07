@@ -152,7 +152,7 @@ export const resolvers = {
         //cliente
 
         nuevoCliente: async (_, { input }, ctx) => {
-            const existeCliente = await Cliente.findById(input.email)
+            const existeCliente = await Cliente.findOne({ email: input.email })
 
             if (existeCliente) {
                 console.log('existe cliente:', existeCliente)
@@ -161,7 +161,8 @@ export const resolvers = {
             if (!existeCliente) console.log('Creando el nuevo usuario:', input)
             const _cliente = new Cliente(input)
             //asignar un vendedor
-            _cliente.vendedor = '61a707d2a43844084a53f5ed'
+            _cliente.vendedor = ctx.id
+            console.log('vendedor contexto: ', ctx)
             //guardar en base de datos
             try {
                 const cliente = await _cliente.save()
