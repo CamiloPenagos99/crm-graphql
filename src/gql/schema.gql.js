@@ -15,6 +15,7 @@ export const typeDefs = gql`
         producto(input: ProductoInput!): Producto
         actualizarProducto(producto: ProductoUpdateInput!, id: ID!): Producto
         eliminarProducto(id: ID!): Producto
+        nuevoCliente(input: InputCliente): Cliente
     }
 
     type Usuario {
@@ -31,6 +32,17 @@ export const typeDefs = gql`
         stock: Int
         precio: Float
         creado: String
+    }
+
+    input Cliente{
+        id: String
+        nombre: String
+        apellido: String
+        empresa: String
+        email: String
+        telefono: String
+        vendedor: String
+        
     }
 
     type Token {
@@ -60,5 +72,12 @@ export const typeDefs = gql`
     input LoginUsuarioInput {
         email: String!
         password: String!
+    }
+
+    input InputCliente{
+        nombre: String!
+        apellido: String!
+        empresa: String!
+        email: String
     }
 `
