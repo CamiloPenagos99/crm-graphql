@@ -153,19 +153,21 @@ export const resolvers = {
 
         nuevoCliente: async (_, { input }, ctx) => {
             try {
-                const existeCliente= await Cliente.findById(input.email)
+                const existeCliente = await Cliente.findById(input.email)
 
                 if (existeCliente) {
                     console.log('existe cliente:', existeCliente)
-                    throw new Error('Ya existe un cliente con el Email, indicado');
+                    throw new Error(
+                        'Ya existe un cliente con el Email, indicado'
+                    )
                 }
-                if (!existeCliente) console.log('Creando el nuevo usuario:', input)
-                
+                if (!existeCliente)
+                    console.log('Creando el nuevo usuario:', input)
+                const _cliente = new Cliente(input)
                 //asignar un vendedor
-
+                _cliente.vendedor = '123456'
                 //guardar en base de datos
                 try {
-                    const _cliente = new Cliente(input)
                     const cliente = await _cliente.save()
                     return cliente
                 } catch (error) {
@@ -176,6 +178,5 @@ export const resolvers = {
                 throw new Error('Error en base de datos: ' + e.message)
             }
         },
-
     },
 }
