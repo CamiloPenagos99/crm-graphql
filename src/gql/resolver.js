@@ -211,5 +211,25 @@ export const resolvers = {
                 throw new Error('Error al guardar cliente:' + error.message)
             }
         },
+
+        editarCliente: async (_, { id, cliente }, ctx) => {
+            try {
+                const before = await Cliente.findById(id)
+
+                if (!before) throw new Error('No existe el Cliente')
+                if( before.vendedor.toString() != ctx.id ) throw new Error('El Vendedor no tiene permiso para el Cliente')
+
+                const update = await Cliente.findByIdAndUpdate(id, cliente, {
+                    new: true,
+                })
+
+                console.log('before: ', before)
+                console.log('update: ', update)
+
+                return update
+            } catch (e) {
+                throw new Error('Error en base de datos: ' + e.message)
+            }
+        }
     },
 }
