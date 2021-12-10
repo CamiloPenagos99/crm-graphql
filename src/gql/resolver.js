@@ -48,6 +48,17 @@ export const resolvers = {
                 throw new Error('Error en base de datos' + e.message)
             }
         },
+
+        obtenerClientes: async () =>{
+            try {
+                const filter = {}
+                const clientes = await Cliente.find(filter)
+                return clientes
+            } catch (error) {
+                console.log('error al consultar clientes')
+                throw new Error('Error en base de datos' + e.message)
+            }
+        }
     },
 
     Mutation: {

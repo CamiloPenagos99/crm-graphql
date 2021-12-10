@@ -6,6 +6,7 @@ export const typeDefs = gql`
         obtenerUsuario(token: String!): Usuario
         obtenerProductos: [Producto]
         obtenerProducto(id: ID!): Producto
+        obtenerClientes: Cliente[]
     }
 
     #Objects types
