@@ -49,7 +49,7 @@ export const resolvers = {
             }
         },
 
-        obtenerClientes: async () =>{
+        obtenerClientes: async () => {
             try {
                 const filter = {}
                 const clientes = await Cliente.find(filter)
@@ -60,16 +60,33 @@ export const resolvers = {
             }
         },
 
-        obtenerClientesVendedor: async (_, {} , { id }) =>{
+        obtenerClientesVendedor: async (_, {}, { id }) => {
             try {
-                const filter = {vendedor: id}
+                const filter = { vendedor: id }
                 const clientes = await Cliente.find(filter)
                 return clientes
             } catch (error) {
                 console.log('error al consultar clientes')
                 throw new Error('Error en base de datos' + e.message)
             }
-        }
+        },
+
+        obtenerCliente: async (_, { idCliente }, { id }) => {
+            try {
+                if(!id) throw new Error('El Vendedor No se ha logueado')
+                //validar si cliente existe
+                const cliente = await Cliente.findById(idCliente)
+                if (!cliente) throw new Error('Cliente no existe')
+
+                //solo el vendedor que lo creo, puede ver
+                if( cliente.vendedor.toString() != id ) throw new Error('El Vendedor no tiene permiso para el Cliente')
+
+                return cliente;
+
+            } catch (error) {
+                throw new Error('Error en la operacion: ' + error.message)
+            }
+        },
     },
 
     Mutation: {
@@ -85,7 +102,7 @@ export const resolvers = {
             if (!existeUsuario) console.log('Creando el nuevo usuario:', input)
             //hash del password
             const salt = await bcryptjs.genSalt(2)
-            input.password = await bcryptjs.hash(password, salt)
+            input.password = await bcryptjs.hash(password)
 
             //guardar en base de datos
             try {

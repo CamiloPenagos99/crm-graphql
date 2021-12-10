@@ -8,6 +8,7 @@ export const typeDefs = gql`
         obtenerProducto(id: ID!): Producto
         obtenerClientes: [Cliente]
         obtenerClientesVendedor: [Cliente]
+        obtenerCliente(idCliente: ID!): Cliente
     }
 
     #Objects types
