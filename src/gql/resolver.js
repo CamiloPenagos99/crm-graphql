@@ -58,6 +58,17 @@ export const resolvers = {
                 console.log('error al consultar clientes')
                 throw new Error('Error en base de datos' + e.message)
             }
+        },
+
+        obtenerClientesVendedor: async (_, {} , { id }) =>{
+            try {
+                const filter = {vendedor: id}
+                const clientes = await Cliente.find(filter)
+                return clientes
+            } catch (error) {
+                console.log('error al consultar clientes')
+                throw new Error('Error en base de datos' + e.message)
+            }
         }
     },
 
