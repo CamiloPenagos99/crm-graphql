@@ -21,6 +21,7 @@ export const typeDefs = gql`
         nuevoCliente(input: InputCliente!): Cliente
         editarCliente(cliente: InputCliente!, id: ID!): Cliente
         eliminarCliente(id: ID!): String
+        nuevoPedido(input: InputPedido!): Pedido
     }
 
     type Usuario {
@@ -54,6 +55,20 @@ export const typeDefs = gql`
         token: String
     }
 
+    type Pedido {
+        pedido: [PedidoObjeto]
+        total: Float
+        cliente: ID
+        vendedor: ID
+        estado: EstadoPedido
+        creado: String
+    }
+
+    type PedidoObjeto{
+        id: ID
+        cantidad: Int
+    }
+
     #Input
     input UsuarioInput {
         nombre: String!
@@ -85,5 +100,23 @@ export const typeDefs = gql`
         empresa: String!
         email: String
         vendedor: String
+    }
+
+    input InputPedido{
+        pedido: [PedidoProductoInput]!
+        total: Float!
+        cliente: ID!
+        estado: EstadoPedido!
+    }
+
+    enum EstadoPedido{
+        PENDIENTE
+        COMPLETADO
+        CANCELADO
+    }
+
+    input PedidoProductoInput{
+        id: ID!
+        cantidad: Int!
     }
 `
