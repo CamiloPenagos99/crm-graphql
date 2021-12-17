@@ -17,12 +17,14 @@ const server = new ApolloServer({
         const token = req.headers['authorization']
         const value = token || 'no'
         try {
-            console.log('intentado validar')
+            console.log('Request In...')
             const { id } = jwt.verify(value, process.env.SECRET)
             console.log('id logueado: ', id);
             return { id };
         } catch (e) {
             console.error('No fue posible autenticar, ' + e.message)
+            return false
+           
         }
         return value;
     },

@@ -144,26 +144,30 @@ export const resolvers = {
     Mutation: {
         usuario: async (_, { input }, ctx) => {
             //validar si el usuario esta registrado
-            const { email, password } = input
-
-            const existeUsuario = await Usuario.findOne({ email: email })
-            if (existeUsuario) {
-                console.log('existe usuario:', existeUsuario)
-                return existeUsuario
-            }
-            if (!existeUsuario) console.log('Creando el nuevo usuario:', input)
-            //hash del password
-            const salt = await bcryptjs.genSalt(2)
-            input.password = await bcryptjs.hash(password)
-
-            //guardar en base de datos
             try {
+                const { email, password } = input
+
+                const existeUsuario = await Usuario.findOne({ email: email })
+                if (existeUsuario) {
+                    console.log('existe usuario:', existeUsuario)
+                    return existeUsuario
+                }
+                if (!existeUsuario)
+                    console.log('Creando el nuevo usuario:', input)
+                //hash del password
+                console.log('input password ingresado: ', password)
+                const salt = await bcryptjs.genSalt(2)
+                input.password = await bcryptjs.hash(password,salt)
+
+                //guardar en base de datos
+
                 const _user = new Usuario(input)
                 await _user.save()
+                console.log('Vendedor creado: ', _user.id);
                 return _user
             } catch (error) {
-                console.error('error al guardar: ', error.message)
-                throw new Error('Error al guardar usuario')
+                console.error('error al registrar vendedor: ', error)
+                throw new Error('Error al registrar vendedor')
             }
         },
 
@@ -366,6 +370,10 @@ export const resolvers = {
         },
 
         actualizarPedido: async (_, { pedidoInput, id }, ctx) => {
+            if (!ctx.id)
+                throw new Error(
+                    'Error de autenticación, intente loguearse de nuevo'
+                )
             try {
                 console.log('Consultando pedido...', id)
                 const pedido = await Pedido.findById(id)
@@ -383,7 +391,7 @@ export const resolvers = {
                         )
                         if (!cliente)
                             throw new Error('El Cliente no esta registrado')
-                        if (pedidoInput.cliente.toString() != ctx.id)
+                        if (cliente.vendedor.toString() != ctx.id)
                             throw new Error(
                                 'El Vendedor no tiene permiso para el Cliente'
                             )

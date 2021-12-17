@@ -25,7 +25,7 @@ export const typeDefs = gql`
         editarCliente(cliente: InputCliente!, id: ID!): Cliente
         eliminarCliente(id: ID!): String
         nuevoPedido(input: InputPedido!): Pedido
-        actualizarPedido(pedido: InputPedido!, id: ID!): Pedido
+        actualizarPedido(pedidoInput: InputPedido!, id: ID!): Pedido
     }
 
     type Usuario {
