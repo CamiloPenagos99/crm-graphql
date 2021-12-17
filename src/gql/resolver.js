@@ -103,13 +103,40 @@ export const resolvers = {
         },
 
         obtenerPedidosVendedor: async (_, { input }, ctx) => {
-         
             try {
                 const pedidos = Pedido.find({ vendedor: ctx.id })
-               // if (pedidos.vendedor.toString() != ctx.id) throw new Error('El Vendedor no tiene permiso para el Cliente')
+                // if (pedidos.vendedor.toString() != ctx.id) throw new Error('El Vendedor no tiene permiso para el Cliente')
                 return pedidos
             } catch (e) {
-                throw new Error('Error en la operación, en base de datos:' + e.message)
+                throw new Error(
+                    'Error en la operación, en base de datos:' + e.message
+                )
+            }
+        },
+
+        obtenerPedido: async (_, { id }, ctx) => {
+            //solo el vendedor que lo creo, puede ver
+
+            try {
+                console.log('Consultando pedido...', id)
+                const pedido = await Pedido.findById(id)
+                if (!pedido) {
+                    throw new Error('El pedido buscado no existe')
+                } else if (pedido) {
+                    console.log('El pedido es:', pedido)
+                    if (pedido.vendedor.toString() != ctx.id) {
+                        throw new Error(
+                            'El Vendedor no tiene permiso para el Pedido'
+                        )
+                    }
+                }
+
+                return pedido
+            } catch (e) {
+                console.error('Error en resolver: ', e)
+                throw new Error(
+                    'Error en la operación, en base de datos:' + e.message
+                )
             }
         },
     },
@@ -335,6 +362,81 @@ export const resolvers = {
             } catch (error) {
                 console.error('error al guardar: ', error.message)
                 throw new Error('Error al guardar Pedido:' + error.message)
+            }
+        },
+
+        actualizarPedido: async (_, { pedidoInput, id }, ctx) => {
+            try {
+                console.log('Consultando pedido...', id)
+                const pedido = await Pedido.findById(id)
+                if (!pedido) {
+                    throw new Error('El pedido buscado no existe')
+                } else if (pedido) {
+                    console.log('El pedido es:', pedido)
+                    if (pedido.vendedor.toString() != ctx.id) {
+                        throw new Error(
+                            'El Vendedor no tiene permiso para el Pedido'
+                        )
+                    } else {
+                        const cliente = await Cliente.findById(
+                            pedidoInput.cliente
+                        )
+                        if (!cliente)
+                            throw new Error('El Cliente no esta registrado')
+                        if (pedidoInput.cliente.toString() != ctx.id)
+                            throw new Error(
+                                'El Vendedor no tiene permiso para el Cliente'
+                            )
+
+                        //revisar stock
+
+                        //verificar stock
+
+                        let total = 0
+                        for (let i = 0; i < pedidoInput.pedido.length; i++) {
+                            //console.log('iterando')
+                            const item = pedidoInput.pedido[i]
+                            const before = await Producto.findById(item.id)
+
+                            if (!before)
+                                throw new Error(
+                                    'No existe el producto: ' + before.nombre
+                                )
+                            if (item.cantidad > before.stock)
+                                throw new Error(
+                                    'No se tiene Stock disponible: ' +
+                                        before.nombre
+                                )
+
+                            //sumar precio
+                            total += item.cantidad * before.precio
+                            //restar existencia
+                            before.stock = before.stock - item.cantidad
+                            await before.save()
+                        }
+
+                        //actualizar el pedido
+                        const _pedido = pedidoInput
+                        //asignar un vendedor
+                        _pedido.vendedor = ctx.id
+                        _pedido.total = total
+                        console.log('vendedor asignado: ', _pedido.vendedor)
+
+                        //guardar en base de datos
+
+                        const pedidoNuevo = Pedido.findOneAndUpdate(
+                            { _id: id },
+                            _pedido,
+                            { new: true }
+                        )
+                        return pedidoNuevo
+                    }
+                }
+            } catch (e) {
+                console.error('Error en resolver: ', e)
+                throw new Error(
+                    'Error en la operación, en base de datos:' + e.message
+                )
             }
         },
     },

@@ -11,6 +11,7 @@ export const typeDefs = gql`
         obtenerCliente(idCliente: ID!): Cliente
         obtenerPedidos: [Pedido]
         obtenerPedidosVendedor: [Pedido]
+        obtenerPedido(id: ID!): Pedido
     }
 
     #Objects types
@@ -24,6 +25,7 @@ export const typeDefs = gql`
         editarCliente(cliente: InputCliente!, id: ID!): Cliente
         eliminarCliente(id: ID!): String
         nuevoPedido(input: InputPedido!): Pedido
+        actualizarPedido(pedido: InputPedido!, id: ID!): Pedido
     }
 
     type Usuario {
