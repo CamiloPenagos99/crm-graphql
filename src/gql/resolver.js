@@ -101,6 +101,17 @@ export const resolvers = {
                 throw new Error('Error en base de datos' + e.message)
             }
         },
+
+        obtenerPedidosVendedor: async (_, { input }, ctx) => {
+         
+            try {
+                const pedidos = Pedido.find({ vendedor: ctx.id })
+               // if (pedidos.vendedor.toString() != ctx.id) throw new Error('El Vendedor no tiene permiso para el Cliente')
+                return pedidos
+            } catch (e) {
+                throw new Error('Error en la operación, en base de datos:' + e.message)
+            }
+        },
     },
 
     Mutation: {
