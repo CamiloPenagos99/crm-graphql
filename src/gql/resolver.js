@@ -90,6 +90,17 @@ export const resolvers = {
                 throw new Error('Error en la operacion: ' + error.message)
             }
         },
+
+        obtenerPedidos: async () => {
+            try {
+                const filter = {}
+                const pedidos = await Pedido.find(filter)
+                return pedidos
+            } catch (error) {
+                console.log('error al consultar pedidos')
+                throw new Error('Error en base de datos' + e.message)
+            }
+        },
     },
 
     Mutation: {
@@ -276,17 +287,27 @@ export const resolvers = {
 
             //verificar stock
 
-            let total = 0;
+            let total = 0
             for (let i = 0; i < input.pedido.length; i++) {
+                //console.log('iterando')
                 const item = input.pedido[i]
                 const before = await Producto.findById(item.id)
 
-                if (!before) throw new Error('No existe el producto: ' + item.id)
-                if (item.cantidad > before.stock) throw new Error('No se tiene Stock disponible: ' + item.id)
+                if (!before)
+                    throw new Error('No existe el producto: ' + before.nombre)
+                if (item.cantidad > before.stock)
+                    throw new Error(
+                        'No se tiene Stock disponible: ' + before.nombre
+                    )
 
                 //sumar precio
                 total += item.cantidad * before.precio
+                //restar existencia
+                before.stock = before.stock - item.cantidad
+                await before.save()
             }
+
+            //console.log('despues del for')
 
             //generar total
 
