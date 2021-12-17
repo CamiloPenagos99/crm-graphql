@@ -405,6 +405,7 @@ export const resolvers = {
                             //console.log('iterando')
                             const item = pedidoInput.pedido[i]
                             const before = await Producto.findById(item.id)
+                            
 
                             if (!before)
                                 throw new Error(
@@ -419,7 +420,9 @@ export const resolvers = {
                             //sumar precio
                             total += item.cantidad * before.precio
                             //restar existencia
-                            before.stock = before.stock - item.cantidad
+                            //before.stock = before.stock - item.cantidad
+                            const previousQuantity = pedido.pedido.find(bef => bef.id === item.id).cantidad;
+                            before.stock = (before.stock + previousQuantity) - item.cantidad;
                             await before.save()
                         }
 
@@ -445,6 +448,24 @@ export const resolvers = {
                 throw new Error(
                     'Error en la operación, en base de datos:' + e.message
                 )
+            }
+        },
+
+        eliminarPedido: async (_, { id }, ctx) => {
+            try {
+                const before = await Pedido.findById(id)
+
+                if (!before) throw new Error('No existe el Pedido')
+                if (before.vendedor.toString() != ctx.id)
+                    throw new Error(
+                        'El Vendedor no tiene permiso para borrar el Pedido'
+                    )
+
+                const del = await Pedido.findByIdAndDelete(id)
+                console.log('Eliminado: ', del)
+                return id
+            } catch (e) {
+                throw new Error('Error en base de datos: ' + e.message)
             }
         },
     },
