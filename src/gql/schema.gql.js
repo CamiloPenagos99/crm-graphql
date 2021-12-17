@@ -20,6 +20,7 @@ export const typeDefs = gql`
         eliminarProducto(id: ID!): Producto
         nuevoCliente(input: InputCliente!): Cliente
         editarCliente(cliente: InputCliente!, id: ID!): Cliente
+        eliminarCliente(id: ID!): String
     }
 
     type Usuario {

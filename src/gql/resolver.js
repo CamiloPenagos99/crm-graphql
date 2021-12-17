@@ -73,16 +73,18 @@ export const resolvers = {
 
         obtenerCliente: async (_, { idCliente }, { id }) => {
             try {
-                if(!id) throw new Error('El Vendedor No se ha logueado')
+                if (!id) throw new Error('El Vendedor No se ha logueado')
                 //validar si cliente existe
                 const cliente = await Cliente.findById(idCliente)
                 if (!cliente) throw new Error('Cliente no existe')
 
                 //solo el vendedor que lo creo, puede ver
-                if( cliente.vendedor.toString() != id ) throw new Error('El Vendedor no tiene permiso para el Cliente')
+                if (cliente.vendedor.toString() != id)
+                    throw new Error(
+                        'El Vendedor no tiene permiso para el Cliente'
+                    )
 
-                return cliente;
-
+                return cliente
             } catch (error) {
                 throw new Error('Error en la operacion: ' + error.message)
             }
@@ -197,11 +199,11 @@ export const resolvers = {
                 console.log('existe cliente:', existeCliente)
                 throw new Error('Ya existe un cliente con el Email, indicado')
             }
-            if (!existeCliente) console.log('Creando el nuevo usuario:', input)
+            if (!existeCliente) console.log('Creando el nuevo cliente:', input)
             const _cliente = new Cliente(input)
             //asignar un vendedor
             _cliente.vendedor = ctx.id
-            console.log('vendedor contexto: ', ctx)
+            console.log('vendedor contexto: ', _cliente.vendedor)
             //guardar en base de datos
             try {
                 const cliente = await _cliente.save()
@@ -217,7 +219,10 @@ export const resolvers = {
                 const before = await Cliente.findById(id)
 
                 if (!before) throw new Error('No existe el Cliente')
-                if( before.vendedor.toString() != ctx.id ) throw new Error('El Vendedor no tiene permiso para el Cliente')
+                if (before.vendedor.toString() != ctx.id)
+                    throw new Error(
+                        'El Vendedor no tiene permiso para el Cliente'
+                    )
 
                 const update = await Cliente.findByIdAndUpdate(id, cliente, {
                     new: true,
@@ -230,6 +235,24 @@ export const resolvers = {
             } catch (e) {
                 throw new Error('Error en base de datos: ' + e.message)
             }
-        }
+        },
+
+        eliminarCliente: async (_, { id }, ctx) => {
+            try {
+                const before = await Cliente.findById(id)
+
+                if (!before) throw new Error('No existe el Cliente')
+                if (before.vendedor.toString() != ctx.id)
+                    throw new Error(
+                        'El Vendedor no tiene permiso para el Cliente'
+                    )
+
+                const del = await Cliente.findByIdAndDelete(id)
+                console.log('Eliminado: ', del)
+                return id
+            } catch (e) {
+                throw new Error('Error en base de datos: ' + e.message)
+            }
+        },
     },
 }
