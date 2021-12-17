@@ -13,7 +13,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: ({ req }) => {
-        console.log('jwt: ', req.headers['authorization'])
+        //console.log('jwt: ', req.headers['authorization'])
         const token = req.headers['authorization']
         const value = token || 'no'
         try {

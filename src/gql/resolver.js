@@ -3,6 +3,7 @@ import Cliente from '../domain/models/Cliente.js'
 import Producto from '../domain/models/Producto.js'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import Pedido from '../domain/models/Pedido.js'
 
 const crearToken = (user, secret, expiresIn) => {
     console.log(user)
@@ -252,6 +253,56 @@ export const resolvers = {
                 return id
             } catch (e) {
                 throw new Error('Error en base de datos: ' + e.message)
+            }
+        },
+
+        //pedidos
+
+        nuevoPedido: async (_, { input }, ctx) => {
+            const existeCliente = await Cliente.findOne({ email: input.email })
+            //verificar existencia cliente
+            if (existeCliente) {
+                console.log('existe cliente:', existeCliente)
+                throw new Error('Ya existe un cliente con el Email, indicado')
+            }
+
+            //verificar el vendedor, del cliente
+
+            const before = await Cliente.findById(input.cliente)
+
+            if (!before) throw new Error('No existe el Cliente')
+            if (before.vendedor.toString() != ctx.id)
+                throw new Error('El Vendedor no tiene permiso para el Cliente')
+
+            //verificar stock
+
+            let total = 0;
+            for (let i = 0; i < input.pedido.length; i++) {
+                const item = input.pedido[i]
+                const before = await Producto.findById(item.id)
+
+                if (!before) throw new Error('No existe el producto: ' + item.id)
+                if (item.cantidad > before.stock) throw new Error('No se tiene Stock disponible: ' + item.id)
+
+                //sumar precio
+                total += item.cantidad * before.precio
+            }
+
+            //generar total
+
+            const _pedido = new Pedido(input)
+            //asignar un vendedor
+            _pedido.vendedor = ctx.id
+            _pedido.total = total
+            console.log('vendedor asignado: ', _pedido.vendedor)
+
+            //guardar en base de datos
+            try {
+                const pedido = await _pedido.save()
+                return pedido
+            } catch (error) {
+                console.error('error al guardar: ', error.message)
+                throw new Error('Error al guardar Pedido:' + error.message)
             }
         },
     },

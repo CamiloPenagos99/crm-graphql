@@ -56,6 +56,7 @@ export const typeDefs = gql`
     }
 
     type Pedido {
+        id: String
         pedido: [PedidoObjeto]
         total: Float
         cliente: ID
@@ -104,9 +105,8 @@ export const typeDefs = gql`
 
     input InputPedido{
         pedido: [PedidoProductoInput]!
-        total: Float!
         cliente: ID!
-        estado: EstadoPedido!
+        estado: EstadoPedido
     }
 
     enum EstadoPedido{
