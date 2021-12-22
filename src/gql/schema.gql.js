@@ -15,6 +15,7 @@ export const typeDefs = gql`
         obtenerPedidoEstado(estado: EstadoPedido!): [Pedido]
         mejoresClientes: [TopCliente]
         mejoresVendedores: [TopVendedor]
+        productoNombre(nombre: String!): [Producto]
     }
 
     #Objects types

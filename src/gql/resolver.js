@@ -172,6 +172,9 @@ export const resolvers = {
                         from: 'clientes',
                         localField: '_id',
                         foreignField: '_id',
+                        $addFields: {
+                            id: { $toObjectId: '$_id' },
+                        },
                         as: 'cliente',
                     },
                 },
@@ -184,13 +187,12 @@ export const resolvers = {
             return clientes
         },
 
-
         mejoresVendedores: async (_, { estado }, ctx) => {
-            const clientes = await Pedido.aggregate([
+            const vendedores = await Pedido.aggregate([
                 { $match: { estado: 'COMPLETADO' } },
                 {
                     $group: {
-                        _id: 'vendedor',
+                        _id: '$vendedor',
                         total: { $sum: '$total' },
                     },
                 },
@@ -203,7 +205,7 @@ export const resolvers = {
                     },
                 },
                 {
-                    $limit: 5
+                    $limit: 5,
                 },
 
                 {
@@ -211,7 +213,24 @@ export const resolvers = {
                 },
             ])
 
-            return clientes
+            console.log('Mejores vendedores: ', JSON.stringify(vendedores))
+            return vendedores
+        },
+
+        productoNombre: async (_, { nombre }, ctx) => {
+            try {
+                const productos = await Producto.find({
+                    $text: { $search: nombre },
+                })
+                if (!productos || productos.length == 0) {
+                    throw new Error('No existen productos, para ese nombre')
+                }
+
+                return productos
+            } catch (error) {
+                console.error(error)
+                throw new Error('Error al consultar los productos, por nombre')
+            }
         },
     },
 
