@@ -14,6 +14,7 @@ export const typeDefs = gql`
         obtenerPedido(id: ID!): Pedido
         obtenerPedidoEstado(estado: EstadoPedido!): [Pedido]
         mejoresClientes: [TopCliente]
+        mejoresVendedores: [TopVendedor]
     }
 
     #Objects types
@@ -61,6 +62,11 @@ export const typeDefs = gql`
     type TopCliente {
         total: String
         cliente: [Cliente]
+    }
+
+    type TopVendedor {
+        total: String
+        vendedor: [Usuario]
     }
 
     type Token {

@@ -183,6 +183,36 @@ export const resolvers = {
 
             return clientes
         },
+
+
+        mejoresVendedores: async (_, { estado }, ctx) => {
+            const clientes = await Pedido.aggregate([
+                { $match: { estado: 'COMPLETADO' } },
+                {
+                    $group: {
+                        _id: 'vendedor',
+                        total: { $sum: '$total' },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'usuarios',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'vendedor',
+                    },
+                },
+                {
+                    $limit: 5
+                },
+
+                {
+                    $sort: { total: -1 },
+                },
+            ])
+
+            return clientes
+        },
     },
 
     Mutation: {
