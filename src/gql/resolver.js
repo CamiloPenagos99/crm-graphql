@@ -142,15 +142,46 @@ export const resolvers = {
 
         obtenerPedidoEstado: async (_, { estado }, ctx) => {
             try {
-                const filter = {'estado': estado ,  'vendedor': ctx.id}
+                if (estado != ('PENDIENTE' || 'COMPLETADO' || 'CANCELADO'))
+                    throw new Error('Estado solicitado, No valido')
+                const filter = { estado, vendedor: ctx.id }
                 const before = await Pedido.find(filter)
 
-                if (!before || before.length==0) throw new Error('No tiene pedidos registrados, con el estado solicitado')
-        
+                if (!before || before.length == 0)
+                    throw new Error(
+                        'No tiene pedidos registrados, con el estado solicitado'
+                    )
+
                 return before
             } catch (e) {
                 throw new Error('Error en base de datos: ' + e.message)
             }
+        },
+
+        mejoresClientes: async (_, { estado }, ctx) => {
+            const clientes = await Pedido.aggregate([
+                { $match: { estado: 'COMPLETADO' } },
+                {
+                    $group: {
+                        _id: '$cliente',
+                        total: { $sum: '$total' },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'clientes',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'cliente',
+                    },
+                },
+
+                {
+                    $sort: { total: -1 },
+                },
+            ])
+
+            return clientes
         },
     },
 

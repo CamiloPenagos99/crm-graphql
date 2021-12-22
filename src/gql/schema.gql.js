@@ -12,7 +12,8 @@ export const typeDefs = gql`
         obtenerPedidos: [Pedido]
         obtenerPedidosVendedor: [Pedido]
         obtenerPedido(id: ID!): Pedido
-        obtenerPedidoEstado(estado: EstadoPedido!): Pedido[]
+        obtenerPedidoEstado(estado: EstadoPedido!): [Pedido]
+        mejoresClientes: [TopCliente]
     }
 
     #Objects types
@@ -46,7 +47,7 @@ export const typeDefs = gql`
         creado: String
     }
 
-    type Cliente{
+    type Cliente {
         id: String
         nombre: String
         apellido: String
@@ -55,6 +56,11 @@ export const typeDefs = gql`
         telefono: String
         vendedor: String
         creado: String
+    }
+
+    type TopCliente {
+        total: String
+        cliente: [Cliente]
     }
 
     type Token {
@@ -71,7 +77,7 @@ export const typeDefs = gql`
         creado: String
     }
 
-    type PedidoObjeto{
+    type PedidoObjeto {
         id: ID
         cantidad: Int
     }
@@ -101,7 +107,7 @@ export const typeDefs = gql`
         password: String!
     }
 
-    input InputCliente{
+    input InputCliente {
         nombre: String!
         apellido: String!
         empresa: String!
@@ -109,19 +115,19 @@ export const typeDefs = gql`
         vendedor: String
     }
 
-    input InputPedido{
+    input InputPedido {
         pedido: [PedidoProductoInput]!
         cliente: ID!
         estado: EstadoPedido
     }
 
-    enum EstadoPedido{
+    enum EstadoPedido {
         PENDIENTE
         COMPLETADO
         CANCELADO
     }
 
-    input PedidoProductoInput{
+    input PedidoProductoInput {
         id: ID!
         cantidad: Int!
     }
