@@ -229,7 +229,7 @@ export const resolvers = {
                 return productos
             } catch (error) {
                 console.error(error)
-                throw new Error('Error al consultar los productos, por nombre')
+                throw new Error('Error al consultar los productos, por nombre:')
             }
         },
     },
