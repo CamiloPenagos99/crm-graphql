@@ -139,6 +139,19 @@ export const resolvers = {
                 )
             }
         },
+
+        obtenerPedidoEstado: async (_, { estado }, ctx) => {
+            try {
+                const filter = {'estado': estado ,  'vendedor': ctx.id}
+                const before = await Pedido.find(filter)
+
+                if (!before || before.length==0) throw new Error('No tiene pedidos registrados, con el estado solicitado')
+        
+                return before
+            } catch (e) {
+                throw new Error('Error en base de datos: ' + e.message)
+            }
+        },
     },
 
     Mutation: {
@@ -157,13 +170,13 @@ export const resolvers = {
                 //hash del password
                 console.log('input password ingresado: ', password)
                 const salt = await bcryptjs.genSalt(2)
-                input.password = await bcryptjs.hash(password,salt)
+                input.password = await bcryptjs.hash(password, salt)
 
                 //guardar en base de datos
 
                 const _user = new Usuario(input)
                 await _user.save()
-                console.log('Vendedor creado: ', _user.id);
+                console.log('Vendedor creado: ', _user.id)
                 return _user
             } catch (error) {
                 console.error('error al registrar vendedor: ', error)
@@ -405,7 +418,6 @@ export const resolvers = {
                             //console.log('iterando')
                             const item = pedidoInput.pedido[i]
                             const before = await Producto.findById(item.id)
-                            
 
                             if (!before)
                                 throw new Error(
@@ -421,8 +433,11 @@ export const resolvers = {
                             total += item.cantidad * before.precio
                             //restar existencia
                             //before.stock = before.stock - item.cantidad
-                            const previousQuantity = pedido.pedido.find(bef => bef.id === item.id).cantidad;
-                            before.stock = (before.stock + previousQuantity) - item.cantidad;
+                            const previousQuantity = pedido.pedido.find(
+                                (bef) => bef.id === item.id
+                            ).cantidad
+                            before.stock =
+                                before.stock + previousQuantity - item.cantidad
                             await before.save()
                         }
 
