@@ -243,7 +243,7 @@ export const resolvers = {
                 const existeUsuario = await Usuario.findOne({ email: email })
                 if (existeUsuario) {
                     console.log('existe usuario:', existeUsuario)
-                    return existeUsuario
+                    throw new Error('El usuario ya esta registrado')
                 }
                 if (!existeUsuario)
                     console.log('Creando el nuevo usuario:', input)
@@ -260,7 +260,7 @@ export const resolvers = {
                 return _user
             } catch (error) {
                 console.error('error al registrar vendedor: ', error)
-                throw new Error('Error al registrar vendedor')
+                throw new Error(error.message)
             }
         },
 
