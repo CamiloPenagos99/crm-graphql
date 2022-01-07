@@ -17,7 +17,7 @@ const server = new ApolloServer({
         const token = req.headers['authorization']
         const value = token || 'no'
         try {
-            console.log('Request in header...', value)
+            console.log('Request in header...')
             const { id } = jwt.verify(value, process.env.SECRET)
             console.log('id logueado: ', value)
             return { id }
