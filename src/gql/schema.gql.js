@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express'
 export const typeDefs = gql`
     #Querys
     type Query {
-        obtenerUsuario(token: String!): Usuario
+        obtenerUsuario: Usuario
         obtenerProductos: [Producto]
         obtenerProducto(id: ID!): Producto
         obtenerClientes: [Cliente]

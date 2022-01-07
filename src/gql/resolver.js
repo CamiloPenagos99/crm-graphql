@@ -15,16 +15,10 @@ const crearToken = (user, secret, expiresIn) => {
 // Provide resolver functions for your schema fields
 export const resolvers = {
     Query: {
-        obtenerUsuario: async (_, { token }, ctx) => {
-            console.log('token: ', token)
-            const { id } = await jwt.verify(token, process.env.SECRET)
-            if (id) {
-                console.log('usuario ID: ', id)
-                const user = await Usuario.findOne({ _id: id })
-                return user
-            } else {
-                throw new Error('Token invalido')
-            }
+        obtenerUsuario: async (_, {}, ctx) => {
+            console.log('token: ', ctx.id)
+            const user = await Usuario.findOne({ _id: ctx.id })
+            return user;
         },
 
         //Productos
