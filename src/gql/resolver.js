@@ -18,7 +18,7 @@ export const resolvers = {
         obtenerUsuario: async (_, {}, ctx) => {
             console.log('token: ', ctx.id)
             const user = await Usuario.findOne({ _id: ctx.id })
-            return user;
+            return user
         },
 
         //Productos
@@ -379,6 +379,7 @@ export const resolvers = {
         },
 
         eliminarCliente: async (_, { id }, ctx) => {
+            console.log('Eliminando cliente...', id)
             try {
                 const before = await Cliente.findById(id)
 
