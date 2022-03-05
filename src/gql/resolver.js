@@ -98,7 +98,7 @@ export const resolvers = {
 
         obtenerPedidosVendedor: async (_, { input }, ctx) => {
             try {
-                const pedidos = Pedido.find({ vendedor: ctx.id })
+                const pedidos = Pedido.find({ vendedor: ctx.id }).populate('cliente')
                 // if (pedidos.vendedor.toString() != ctx.id) throw new Error('El Vendedor no tiene permiso para el Cliente')
                 return pedidos
             } catch (e) {
@@ -427,7 +427,7 @@ export const resolvers = {
                     throw new Error('No existe el producto: ' + before.nombre)
                 if (item.cantidad > before.stock)
                     throw new Error(
-                        'No se tiene Stock disponible: ' + before.nombre
+                        'No se tiene stock disponible: ' + before.nombre
                     )
 
                 //sumar precio
@@ -500,7 +500,7 @@ export const resolvers = {
                                 )
                             if (item.cantidad > before.stock)
                                 throw new Error(
-                                    'No se tiene Stock disponible: ' +
+                                    'No se tiene stock disponible: ' +
                                         before.nombre
                                 )
 

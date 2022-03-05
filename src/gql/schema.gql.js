@@ -78,7 +78,7 @@ export const typeDefs = gql`
         id: String
         pedido: [PedidoObjeto]
         total: Float
-        cliente: ID
+        cliente: Cliente
         vendedor: ID
         estado: EstadoPedido
         creado: String
