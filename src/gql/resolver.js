@@ -98,7 +98,9 @@ export const resolvers = {
 
         obtenerPedidosVendedor: async (_, { input }, ctx) => {
             try {
-                const pedidos = Pedido.find({ vendedor: ctx.id }).populate('cliente')
+                const pedidos = Pedido.find({ vendedor: ctx.id }).populate(
+                    'cliente'
+                )
                 // if (pedidos.vendedor.toString() != ctx.id) throw new Error('El Vendedor no tiene permiso para el Cliente')
                 return pedidos
             } catch (e) {
@@ -525,7 +527,7 @@ export const resolvers = {
 
                         //guardar en base de datos
 
-                        const pedidoNuevo = Pedido.findOneAndUpdate(
+                        const pedidoNuevo = await Pedido.findOneAndUpdate(
                             { _id: id },
                             _pedido,
                             { new: true }
@@ -554,6 +556,33 @@ export const resolvers = {
                 const del = await Pedido.findByIdAndDelete(id)
                 console.log('Eliminado: ', del)
                 return id
+            } catch (e) {
+                throw new Error('Error en base de datos: ' + e.message)
+            }
+        },
+
+        actualizarEstadoPedido: async (_, { pedidoInput }, ctx) => {
+            try {
+                const { pedido, cliente, estado } = pedidoInput
+                const id = pedido
+                console.log('Consultando pedido', pedidoInput)
+                const before = await Pedido.findById(id)
+
+                if (!before) throw new Error('No existe el Pedido')
+                if (before.vendedor.toString() != ctx.id)
+                    throw new Error(
+                        'El Vendedor no tiene permiso para borrar el Pedido'
+                    )
+
+                //guardar en base de datos
+                const _pedido = before
+                _pedido.estado = estado
+                const pedidoNuevo = await Pedido.findOneAndUpdate(
+                    { _id: id },
+                    _pedido,
+                    { new: true }
+                )
+                return pedidoNuevo
             } catch (e) {
                 throw new Error('Error en base de datos: ' + e.message)
             }

@@ -30,6 +30,7 @@ export const typeDefs = gql`
         eliminarCliente(id: ID!): String
         nuevoPedido(input: InputPedido!): Pedido
         actualizarPedido(pedidoInput: InputPedido!, id: ID!): Pedido
+        actualizarEstadoPedido(pedidoInput: InputEstadoPedido!): Pedido
         eliminarPedido(id: ID!): String
     }
 
@@ -126,6 +127,12 @@ export const typeDefs = gql`
         pedido: [PedidoProductoInput]!
         cliente: ID!
         estado: EstadoPedido
+    }
+
+    input InputEstadoPedido {
+        pedido: ID!
+        cliente: ID!
+        estado: EstadoPedido!
     }
 
     enum EstadoPedido {
