@@ -563,6 +563,10 @@ export const resolvers = {
 
         actualizarEstadoPedido: async (_, { pedidoInput }, ctx) => {
             try {
+                console.log({ ctx })
+                if (!ctx.id) {
+                    throw new Error('El Vendedor no se ha logueado')
+                }
                 const { pedido, cliente, estado } = pedidoInput
                 const id = pedido
                 console.log('Consultando pedido', pedidoInput)
