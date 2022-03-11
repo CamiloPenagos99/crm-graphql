@@ -168,9 +168,6 @@ export const resolvers = {
                         from: 'clientes',
                         localField: '_id',
                         foreignField: '_id',
-                        $addFields: {
-                            id: { $toObjectId: '$_id' },
-                        },
                         as: 'cliente',
                     },
                 },
